@@ -30,7 +30,10 @@ class CidadeAdmin(ImportExportModelAdmin):
     list_filter = ('prioridade', 'rg')
     filter_horizontal = ('colaboradores',)
 
+    ordering = ('prioridade','-votos')
+
     resource_class = CidadeResource
+
 
 
 class ColaboradorAdmin(ImportExportModelAdmin):
@@ -41,7 +44,7 @@ class ColaboradorAdmin(ImportExportModelAdmin):
 
     search_fields = ('nome',)
     list_filter = ('tipo','colaboradores_cidade')
-    list_display = ('nome', 'tel', 'tipo', 'lista_cidades')
+    list_display = ('nome', 'tel', 'tipo', 'lista_cidades', 'obs')
 
     resource_class = ColaboradorResource
 

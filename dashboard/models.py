@@ -20,7 +20,7 @@ COLABORADOR_CHOICES = (
     ('CODEPUTADO', 'CoDeputado'),
     ('DOBRADA', 'Dobrada'),
     ('AGENTE', 'Agente Público'),
-    ('MOBILIZADOR', 'Mobilizador'),
+    ('MOBILIZA', 'Mobilizador'),
 )
 
 # Create your models here.
