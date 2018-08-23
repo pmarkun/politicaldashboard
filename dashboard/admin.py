@@ -45,7 +45,7 @@ class ColaboradorAdmin(ImportExportModelAdmin):
 
     resource_class = ColaboradorResource
 
-admin.site.site_header = 'ZéGustavo2018/2019 Dashboard'
+admin.site.site_header = 'ZéGustavo 1819 Dashboard'
 admin.site.register(Cidade, CidadeAdmin)
 admin.site.register(Colaborador, ColaboradorAdmin)
 admin.site.register(Responsavel)
