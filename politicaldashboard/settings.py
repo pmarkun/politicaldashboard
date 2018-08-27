@@ -25,7 +25,7 @@ SECRET_KEY = '9oj+wa8c$$6w&ssh8a(1vnx-jbns_j#z$ez4$neuuepy9msj1b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['dashboard.gabinete56.com.br']
 
 
 # Application definition
