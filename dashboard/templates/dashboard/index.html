@@ -1,0 +1,58 @@
+{% load leaflet_tags %}
+{% load static %}
+{% load js %}
+
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    {% leaflet_js %}
+    {% leaflet_css %}
+    <style>
+      .leaflet-container { height: 100%; }
+    </style>
+    <script type="text/javascript">
+      window.addEventListener("map:init", function (event) {
+        var mapa = {{dados|safe}};
+        console.log(mapa);
+        var map = event.detail.map;
+
+        $.ajax({
+          dataType: "json",
+          url: "{% static "dashboard/saopaulo.geojson" %}",
+          success: function(data) {
+              var geojsonLayer = new L.geoJson(data, {
+              onEachFeature: function onEachFeature(feature, layer) {
+                var props = feature.properties;
+                if (mapa[props["CD_GEOCMU"]]) {
+                  cidade = mapa[props["CD_GEOCMU"]]
+                  var content = '<b>'+cidade["nome"]+'</b>';
+                  content += "<ul>"
+                  if (cidade['dobradas'].length > 0) {
+                    layer.setStyle({fillColor: '#FF0000'});
+                  }
+
+                  for (d in cidade['dobradas']) {
+                    content += '<li>'+ cidade['dobradas'][d]["nome"] + ' (' + cidade['dobradas'][d]['tipo'] + ') </li>'
+                  }
+                  content += "</ul>"
+
+
+                  layer.bindPopup(content);
+                }
+            }});
+              geojsonLayer.addTo(map);
+              var bounds = L.latLngBounds(geojsonLayer.getBounds());
+              map.fitBounds(bounds)
+          }
+    }).error(function() {});
+
+
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Mapa de Situação</h1>
+
+    {% leaflet_map "main" %}
+  </body>
+</html>
