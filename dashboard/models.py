@@ -49,7 +49,7 @@ class Cidade(models.Model):
     prioridade = models.CharField(max_length=10, choices=PRIORIDADE_CHOICES, default='BAIXA')
     situacao_digital = models.IntegerField(choices=SITUACAO_CHOICES,default=0)
     situacao_territorio = models.IntegerField(choices=SITUACAO_CHOICES,default=0)
-    colaboradores = models.ManyToManyField(Colaborador, related_name='colaboradores_cidade')
+    colaboradores = models.ManyToManyField(Colaborador, related_name='colaboradores_cidade', blank=True)
 
     def __str__(self):
         return self.nome
