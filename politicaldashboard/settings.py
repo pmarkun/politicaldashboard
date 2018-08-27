@@ -124,4 +124,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR + '/static/'
 MEDIA_ROOT = BASE_DIR + '/media/'
 
-SPATIALITE_LIBRARY_PATH = 'mod_spatialite'
+LEAFLET_CONFIG = {
+    'TILES' : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    'PLUGINS' : {
+        'leaflet-search' : {
+            'css' : 'http://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css',
+            'js' : 'http://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js',
+            'auto-include': True,
+        }
+    }
+}

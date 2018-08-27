@@ -12,15 +12,9 @@
     </style>
     <script type="text/javascript">
       window.addEventListener("map:init", function (event) {
-        var Stamen_Toner = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-	maxZoom: 16
-});
-
 
         var mapa = {{dados|safe}};
         var map = event.detail.map;
-        Stamen_Toner.addTo(map);
 
         $.ajax({
           dataType: "json",
@@ -58,11 +52,34 @@
               geojsonLayer.addTo(map);
               var bounds = L.latLngBounds(geojsonLayer.getBounds());
               map.fitBounds(bounds)
-          }
-    }).error(function() {});
 
+              var searchControl = new L.Control.Search({
+            		layer: geojsonLayer,
+            		propertyName: 'NM_MUNICIP',
+            		marker: false,
+            		moveToLocation: function(latlng, title, map) {
+            			//map.fitBounds( latlng.layer.getBounds() );
+            			var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+              			map.setView(latlng, zoom-2); // access the zoom
+            		}
+            	});
 
-      });
+              searchControl.on('search:locationfound', function(e) {
+            		if(e.layer._popup)
+            			e.layer.openPopup();
+
+            	}).on('search:collapsed', function(e) {
+
+            		featuresLayer.eachLayer(function(layer) {	//restore feature color
+            			featuresLayer.resetStyle(layer);
+            		});
+            	});
+
+              map.addControl( searchControl );  //inizialize search control
+
+          } // DATA FUNCTION
+        }).error(function() {}); //AJAX SUCESS
+      }); //EVENT LISTENER
     </script>
   </head>
   <body>
