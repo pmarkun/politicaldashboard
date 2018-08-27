@@ -12,15 +12,26 @@
     </style>
     <script type="text/javascript">
       window.addEventListener("map:init", function (event) {
+        var Stamen_Toner = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+	maxZoom: 16
+});
+
+
         var mapa = {{dados|safe}};
-        console.log(mapa);
         var map = event.detail.map;
+        Stamen_Toner.addTo(map);
 
         $.ajax({
           dataType: "json",
           url: "{% static "dashboard/saopaulo.geojson" %}",
           success: function(data) {
               var geojsonLayer = new L.geoJson(data, {
+              style: function () {
+                return { fillColor: "#FFFFFF",
+                         weight: 0.3,
+                        color:"#000000"}
+              },
               onEachFeature: function onEachFeature(feature, layer) {
                 var props = feature.properties;
                 if (mapa[props["CD_GEOCMU"]]) {
@@ -28,7 +39,11 @@
                   var content = '<b>'+cidade["nome"]+'</b>';
                   content += "<ul>"
                   if (cidade['dobradas'].length > 0) {
-                    layer.setStyle({fillColor: '#FF0000'});
+                    console.log(cidade['dobradas'].length)
+                    layer.setStyle({
+                      fillColor: '#FF0000',
+                      fillOpacity: cidade['dobradas'].length*0.3,
+                    });
                   }
 
                   for (d in cidade['dobradas']) {
