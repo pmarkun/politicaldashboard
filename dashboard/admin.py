@@ -1,8 +1,40 @@
 from django.contrib import admin
 from dashboard.models import Cidade, Colaborador, Responsavel
+from django.shortcuts import render
 
 from import_export.admin import ImportExportModelAdmin
 from import_export import resources
+
+
+class MyAdminSite(admin.AdminSite):
+    def __init__(self, *args, **kwargs):
+        super(MyAdminSite, self).__init__(*args, **kwargs)
+        self._registry.update(admin.site._registry)
+
+    def map(self, request):
+        cidades = Cidade.objects.all()
+        dados = {}
+        for c in cidades:
+            dados[c.ibge] = {
+                "nome" : c.nome,
+                "dobradas" : list(c.colaboradores.values())
+            }
+
+        context = { "dados" : dados}
+        return render(request, 'dashboard/index.html', context)
+
+    def get_urls(self):
+        from django.conf.urls import url
+        urls = super(MyAdminSite, self).get_urls()
+        urls += [
+            url(r'^map/$', self.admin_view(self.map))
+        ]
+        return urls
+
+    def my_view(self, request):
+        return HttpResponse("Hello!")
+
+admin_site = MyAdminSite()
 
 # Register your models here.
 
@@ -48,7 +80,8 @@ class ColaboradorAdmin(ImportExportModelAdmin):
 
     resource_class = ColaboradorResource
 
-admin.site.site_header = 'ZéGustavo 1819 Dashboard'
-admin.site.register(Cidade, CidadeAdmin)
-admin.site.register(Colaborador, ColaboradorAdmin)
-admin.site.register(Responsavel)
+
+admin_site.site_header = 'ZéGustavo 1819 Dashboard'
+admin_site.register(Cidade, CidadeAdmin)
+admin_site.register(Colaborador, ColaboradorAdmin)
+admin_site.register(Responsavel)
