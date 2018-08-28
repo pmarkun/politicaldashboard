@@ -1,0 +1,101 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_static admin_list %}
+{% load leaflet_tags %}
+{% load static %}
+{% load js %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  {% leaflet_js %}
+  {% leaflet_css %}
+  <style>
+    .leaflet-container {
+      height: 100%;
+      width:75%;
+      float:left;
+     }
+  </style>
+  <script type="text/javascript">
+    window.addEventListener("map:init", function (event) {
+
+      var mapa = {{dados|safe}};
+      var map = event.detail.map;
+
+      $.ajax({
+        dataType: "json",
+        url: "{% static "dashboard/saopaulo.geojson" %}",
+        success: function(data) {
+            var geojsonLayer = new L.geoJson(data, {
+            style: function () {
+              return { fillColor: "#FFFFFF",
+                       weight: 0.3,
+                      color:"#000000"}
+            },
+            onEachFeature: function onEachFeature(feature, layer) {
+              var props = feature.properties;
+              if (mapa[props["CD_GEOCMU"]]) {
+                cidade = mapa[props["CD_GEOCMU"]]
+                var content = '<b>'+cidade["nome"]+'</b>';
+                content += "<ul>"
+                if (cidade['dobradas'].length > 0) {
+                  console.log(cidade['dobradas'].length)
+                  layer.setStyle({
+                    fillColor: '#FF0000',
+                    fillOpacity: cidade['dobradas'].length*0.3,
+                  });
+                }
+
+                for (d in cidade['dobradas']) {
+                  content += '<li>'+ cidade['dobradas'][d]["nome"] + ' (' + cidade['dobradas'][d]['tipo'] + ') </li>'
+                }
+                content += "</ul>"
+
+
+                layer.bindPopup(content);
+              }
+          }});
+            geojsonLayer.addTo(map);
+            var bounds = L.latLngBounds(geojsonLayer.getBounds());
+            map.fitBounds(bounds)
+
+            var searchControl = new L.Control.Search({
+              layer: geojsonLayer,
+              propertyName: 'NM_MUNICIP',
+              marker: false,
+              moveToLocation: function(latlng, title, map) {
+                //map.fitBounds( latlng.layer.getBounds() );
+                var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+                  map.setView(latlng, zoom); // access the zoom
+              }
+            });
+
+            searchControl.on('search:locationfound', function(e) {
+              if(e.layer._popup)
+                e.layer.openPopup();
+
+            }).on('search:collapsed', function(e) {
+
+              featuresLayer.eachLayer(function(layer) {	//restore feature color
+                featuresLayer.resetStyle(layer);
+              });
+            });
+
+            map.addControl( searchControl );  //inizialize search control
+
+        } // DATA FUNCTION
+      }).error(function() {}); //AJAX SUCESS
+    }); //EVENT LISTENER
+  </script>
+{% endblock %}
+
+{% block content_title %}
+<h1>Mapa de Situação</h1>
+
+{% endblock %}
+
+{% block result_list %}
+    {% leaflet_map "main" %}
+{% endblock %}
+
+{% block pagination %}{% endblock %}

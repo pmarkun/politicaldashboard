@@ -1,5 +1,5 @@
 from django.contrib import admin
-from dashboard.models import Cidade, Colaborador, Responsavel
+from dashboard.models import Cidade, Colaborador, Responsavel, CidadeMap
 from django.shortcuts import render
 
 from import_export.admin import ImportExportModelAdmin
@@ -81,7 +81,35 @@ class ColaboradorAdmin(ImportExportModelAdmin):
     resource_class = ColaboradorResource
 
 
+class CidadeMapAdmin(admin.ModelAdmin):
+    change_list_template = 'dashboard/index.html'
+    change_list_template = 'admin/cidademap_change_list.html'
+    list_filter = ('colaboradores__tipo',)
+
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(
+            request,
+            extra_context=extra_context,
+        )
+
+        try:
+            qs = response.context_data["cl"].queryset
+        except (AttributeError, KeyError):
+            return response
+
+        cidades = qs
+        dados = {}
+        for c in cidades:
+            dados[c.ibge] = {
+                "nome" : c.nome,
+                "dobradas" : list(c.colaboradores.values())
+            }
+        response.context_data["dados"] = dados
+
+        return response
+
 admin_site.site_header = 'ZéGustavo 1819 Dashboard'
 admin_site.register(Cidade, CidadeAdmin)
+admin_site.register(CidadeMap, CidadeMapAdmin)
 admin_site.register(Colaborador, ColaboradorAdmin)
 admin_site.register(Responsavel)

@@ -60,3 +60,10 @@ class Responsavel(models.Model):
 
     def __str__(self):
         return self.nome
+
+
+class CidadeMap(Cidade):
+    class Meta():
+        proxy = True
+        verbose_name = "Mapa de Território"
+        verbose_name_plural = "Mapa de Territórios"
