@@ -119,12 +119,14 @@ class AgendaAdmin(admin.ModelAdmin):
     def lista_cidades(self,obj):
         return [c for c in obj.cidades.all()]
 
+    filter_horizontal = ('lista_cidades',)
     list_display = ('nome', 'projecao', 'realidade', 'data', 'lista_cidades', 'obs')
 
 class TerritorioAdmin(admin.ModelAdmin):
     def lista_cidades(self,obj):
         return [c for c in obj.cidades.all()]
 
+    filter_horizontal = ('lista_cidades',)
     list_display = ('nome', 'projecao', 'lista_cidades', 'situacao_territorio')
 
 
