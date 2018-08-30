@@ -25,6 +25,9 @@ COLABORADOR_CHOICES = (
 
 # Create your models here.
 class Colaborador(models.Model):
+    class Meta():
+        verbose_name_plural = "Colaboradores"
+
     nome = models.CharField(max_length=200)
     tel = models.CharField(max_length=200, blank=True)
     email = models.EmailField(blank=True)
@@ -44,6 +47,7 @@ class Cidade(models.Model):
     pop = models.IntegerField(default=0)
     ra = models.CharField(max_length=200, blank=True)
     rg = models.CharField(max_length=200, blank=True)
+    projecao = models.IntegerField(blank=True, null=True)
     votos = models.IntegerField(default=0)
     votos_marina = models.IntegerField(default=0)
     prioridade = models.CharField(max_length=10, choices=PRIORIDADE_CHOICES, default='BAIXA')
@@ -52,7 +56,7 @@ class Cidade(models.Model):
     colaboradores = models.ManyToManyField(Colaborador, related_name='colaboradores_cidade', blank=True)
 
     def __str__(self):
-        return self.nome
+        return self.nome + " (" + str(self.projecao) + ")"
 
 class Responsavel(models.Model):
     email = models.EmailField()
@@ -77,9 +81,9 @@ class Territorio(models.Model):
     situacao_territorio = models.IntegerField(choices=SITUACAO_CHOICES,default=0)
 
 class Agenda(models.Model):
-    nome = models.CharField(max_length=300)
+    nome = models.CharField(max_length=300, blank=True)
     cidades = models.ManyToManyField(Cidade, blank=True)
     data = models.DateField(blank=True)
-    projecao = models.IntegerField(blank=True)
+    projecao = models.IntegerField(blank=True, null=True)
     realidade = models.IntegerField(blank=True, null=True)
     obs = models.TextField(blank=True)

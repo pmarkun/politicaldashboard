@@ -5,6 +5,8 @@ from django.shortcuts import render
 from import_export.admin import ImportExportModelAdmin
 from import_export import resources
 
+from django.utils.html import format_html
+
 
 class MyAdminSite(admin.AdminSite):
     def __init__(self, *args, **kwargs):
@@ -110,10 +112,19 @@ class CidadeMapAdmin(admin.ModelAdmin):
 
         return response
 
+class AgendaAdmin(admin.ModelAdmin):
+    def show_firm_url(self, obj):
+        return format_html("<a href='{url}'>{url}</a>", url=obj.firm_url)
+
+    def lista_cidades(self,obj):
+        return [c for c in obj.cidades.all()]
+
+    list_display = ('nome', 'projecao', 'realidade', 'data', 'lista_cidades', 'obs')
+
 admin_site.site_header = 'ZéGustavo 1819 Dashboard'
 admin_site.register(Cidade, CidadeAdmin)
 admin_site.register(CidadeMap, CidadeMapAdmin)
 admin_site.register(Colaborador, ColaboradorAdmin)
 admin_site.register(Responsavel)
 admin_site.register(Territorio)
-admin_site.register(Agenda)
+admin_site.register(Agenda, AgendaAdmin)
