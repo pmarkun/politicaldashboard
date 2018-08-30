@@ -67,3 +67,19 @@ class CidadeMap(Cidade):
         proxy = True
         verbose_name = "Mapa de Território"
         verbose_name_plural = "Mapa de Territórios"
+
+
+class Territorio(models.Model):
+    nome = models.CharField(max_length=300)
+    eleitores = models.IntegerField(blank=True)
+    projecao = models.IntegerField(blank=True)
+    cidades = models.ManyToManyField(Cidade, related_name='cidades_territorio', blank=True)
+    situacao_territorio = models.IntegerField(choices=SITUACAO_CHOICES,default=0)
+
+class Agenda(models.Model):
+    nome = models.CharField(max_length=300)
+    cidades = models.ManyToManyField(Cidade, blank=True)
+    data = models.DateField(blank=True)
+    projecao = models.IntegerField(blank=True)
+    realidade = models.IntegerField(blank=True, null=True)
+    obs = models.TextField(blank=True)

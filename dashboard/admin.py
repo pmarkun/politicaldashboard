@@ -1,5 +1,5 @@
 from django.contrib import admin
-from dashboard.models import Cidade, Colaborador, Responsavel, CidadeMap
+from dashboard.models import Cidade, Colaborador, Responsavel, CidadeMap, Territorio, Agenda
 from django.shortcuts import render
 
 from import_export.admin import ImportExportModelAdmin
@@ -75,8 +75,10 @@ class ColaboradorAdmin(ImportExportModelAdmin):
     lista_cidades.short_description = 'Territórios'
 
     search_fields = ('nome',)
+
     list_filter = ('tipo','colaboradores_cidade')
-    list_display = ('nome', 'tel', 'tipo', 'lista_cidades', 'obs')
+    list_display = ('nome', 'tel', 'tipo', 'lista_cidades', 'prioridade', 'obs')
+    list_editable = ('prioridade',)
 
     resource_class = ColaboradorResource
 
@@ -113,3 +115,5 @@ admin_site.register(Cidade, CidadeAdmin)
 admin_site.register(CidadeMap, CidadeMapAdmin)
 admin_site.register(Colaborador, ColaboradorAdmin)
 admin_site.register(Responsavel)
+admin_site.register(Territorio)
+admin_site.register(Agenda)
