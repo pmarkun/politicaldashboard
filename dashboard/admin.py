@@ -119,15 +119,16 @@ class AgendaAdmin(admin.ModelAdmin):
     def lista_cidades(self,obj):
         return [c for c in obj.cidades.all()]
 
-    filter_horizontal = ('lista_cidades',)
     list_display = ('nome', 'projecao', 'realidade', 'data', 'lista_cidades', 'obs')
+    filter_horizontal = ('cidades',)
+
 
 class TerritorioAdmin(admin.ModelAdmin):
     def lista_cidades(self,obj):
         return [c for c in obj.cidades.all()]
 
-    filter_horizontal = ('lista_cidades',)
     list_display = ('nome', 'projecao', 'lista_cidades', 'situacao_territorio')
+    filter_horizontal = ('cidades',)
 
 
 admin_site.site_header = 'ZéGustavo 1819 Dashboard'
