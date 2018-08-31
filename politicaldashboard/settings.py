@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['dashboard.gabinete56.com.br', '0.0.0.0']
 
 INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
